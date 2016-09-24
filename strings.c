@@ -61,7 +61,7 @@ new_string(const char *c_string)
     ++n;
   }
 
-  result = alloc_string(n);
+  result = alloc_string(string_length);
 
   u32 c_string_pos = 0;
   for (s32 n = 0; n < result->length; ++n)
