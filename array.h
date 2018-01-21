@@ -60,6 +60,10 @@ namespace Array
   get(Array<T>& array, u32 index);
 
   template <typename T>
+  s32
+  get_element_index(Array<T>& array, T& element);
+
+  template <typename T>
   void
   add_n(Array<T>& array, T *new_elements, u32 n_new_elements);
 
@@ -74,6 +78,10 @@ namespace Array
   template <typename T>
   void
   remove(Array<T>& array, u32 index);
+
+  template <typename T>
+  void
+  remove_ordered(Array<T>& array, u32 remove_at_index);
 
   template <typename T>
   void
@@ -106,11 +114,10 @@ namespace Array
 
     // Constructor:  Needed to test for - and do - initial heap allocation
     Array(u32 initial_size = ARRAY_DEFAULT_INITIAL_SIZE)
+      : array_size(0),
+        n_elements(0),
+        elements(0)
     {
-      this->array_size = 0;
-      this->n_elements = 0;
-      this->elements = 0;
-
       resize(*this, initial_size);
     }
 
@@ -192,14 +199,40 @@ namespace Array
   }
 
 
-  // Getter
   //
+  // Getters
+  //
+
   template <typename T>
   T *
   get(Array<T>& array, const u32 index)
   {
     ARRAY_ASSERT(index < array.n_elements);
     return array.elements + index;
+  }
+
+  // Searches the array for the index of the first element equal to the given element
+  //
+  template <typename T>
+  s32
+  get_element_index(Array<T>& array, T& element)
+  {
+    s32 result = -1;
+
+    for (u32 test_index = 0;
+         test_index < array.n_elements;
+         ++test_index)
+    {
+      T& test_element = array[test_index];
+
+      if (test_element == element)
+      {
+        result = test_index;
+        break;
+      }
+    }
+
+    return result;
   }
 
 
@@ -312,6 +345,7 @@ namespace Array
 #endif
 
 #ifdef ARRAY_DEMO
+#include <stdio.h>
 
 void
 array_demo()
